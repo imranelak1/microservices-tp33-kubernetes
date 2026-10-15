@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: demo-k8s
+  namespace: course7-tp33
+spec:
+  replicas: 2
+  selector:
+    matchLabels: {app: demo-k8s}
+  template:
+    metadata:
+      labels: {app: demo-k8s}
+    spec:
+      containers:
+        - name: api
+          image: course7-tp33:1.0.0
+          imagePullPolicy: IfNotPresent
+          ports: [{containerPort: 8080}]
+          env:
+            - name: JAVA_TOOL_OPTIONS
+              value: -XX:MaxRAMPercentage=60.0 -XX:ActiveProcessorCount=2
+            - name: APP_MESSAGE
+              valueFrom:
+                configMapKeyRef: {name: demo-k8s-config, key: app.message}
+          resources:
+            requests: {cpu: 100m, memory: 192Mi}
+            limits: {cpu: 500m, memory: 384Mi}
+          readinessProbe:
+            httpGet: {path: /actuator/health/readiness, port: 8080}
+            initialDelaySeconds: 10
+            periodSeconds: 5
+          startupProbe:
+            httpGet: {path: /actuator/health/readiness, port: 8080}
+            failureThreshold: 60
+            periodSeconds: 5
+            timeoutSeconds: 3
+          livenessProbe:
+            httpGet: {path: /actuator/health/liveness, port: 8080}
+            initialDelaySeconds: 20
+            periodSeconds: 10

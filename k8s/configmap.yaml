@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: demo-k8s-config
+  namespace: course7-tp33
+data:
+  app.message: Hello from ConfigMap in Kubernetes
