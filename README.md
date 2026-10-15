@@ -11,7 +11,16 @@
  kubectl get pods,svc -n course7-tp33
  ```
 
- L'API répond sur `http://$(minikube ip):30333/api/hello`. Avec kind, charger l'image avec `kind load docker-image course7-tp33:1.0.0`. Pour retirer uniquement ce lab : `kubectl delete namespace course7-tp33`.
+ L'API répond sur `http://$(minikube ip):30333/api/hello`. Pour reproduire les captures avec kind :
+
+ ```sh
+ kind create cluster --name course7 --config kind-config.yaml
+ kind load docker-image course7-tp33:1.0.0 --name course7
+ kubectl apply -f k8s/
+ curl http://localhost:30333/api/hello
+ ```
+
+ Pour retirer uniquement ce lab : `kubectl delete namespace course7-tp33`.
 
  Les traces d'exécution sont dans `evidence/` et les captures dans `screenshots/`.
 
